@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pokémon GBA online</title>
+<meta name="description" content="Guía para jugar Pokémon FireRed, Emerald y Quetzal online entre hermanos en distintos países.">
+<style>
+  :root {
+    --bg: #f7f6f2;
+    --surface: #ffffff;
+    --text: #1d1d1f;
+    --muted: #5f6368;
+    --border: #e2e0d8;
+    --accent: #c0392b;
+    --accent-soft: #fbeae8;
+    --ok: #1e7f4f;
+    --ok-soft: #e6f4ec;
+    --warn: #9a6200;
+    --warn-soft: #fdf3e1;
+    --code: #f0eee8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141416;
+      --surface: #1d1d20;
+      --text: #ececec;
+      --muted: #a3a3a8;
+      --border: #2f2f34;
+      --accent: #ff6b5b;
+      --accent-soft: #3a1f1c;
+      --ok: #5fd39a;
+      --ok-soft: #173326;
+      --warn: #f2b84b;
+      --warn-soft: #382c14;
+      --code: #26262a;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  header {
+    background: var(--accent);
+    color: #fff;
+    padding: 40px 16px 32px;
+  }
+  header .wrap { max-width: 760px; margin: 0 auto; }
+  header h1 { margin: 0 0 8px; font-size: 2rem; line-height: 1.2; }
+  header p { margin: 0; opacity: .9; }
+  nav {
+    position: sticky; top: 0; z-index: 2;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  nav ul {
+    display: flex; gap: 4px;
+    max-width: 760px; margin: 0 auto; padding: 8px 16px;
+    list-style: none; white-space: nowrap;
+  }
+  nav a {
+    display: block; padding: 6px 12px; border-radius: 999px;
+    color: var(--muted); text-decoration: none; font-size: .9rem;
+  }
+  nav a:hover { background: var(--accent-soft); color: var(--accent); }
+  main { max-width: 760px; margin: 0 auto; padding: 8px 16px 64px; }
+  section { margin-top: 40px; scroll-margin-top: 64px; }
+  h2 { font-size: 1.5rem; margin: 0 0 12px; }
+  h3 { font-size: 1.1rem; margin: 28px 0 8px; }
+  a { color: var(--accent); }
+  code { background: var(--code); padding: 1px 6px; border-radius: 4px; font-size: .9em; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+  .callout { border-radius: 12px; padding: 14px 18px; margin: 16px 0; }
+  .callout.ok { background: var(--ok-soft); border-left: 4px solid var(--ok); }
+  .callout.warn { background: var(--warn-soft); border-left: 4px solid var(--warn); }
+  .callout strong:first-child { display: block; margin-bottom: 4px; }
+  .verdicts { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  .verdicts .card { margin: 0; }
+  .verdicts h3 { margin: 0 0 6px; }
+  .tag {
+    display: inline-block; font-size: .75rem; font-weight: 600;
+    padding: 2px 8px; border-radius: 999px; margin-bottom: 8px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .steps { list-style: none; padding: 0; margin: 0; counter-reset: step; }
+  .steps li {
+    counter-increment: step;
+    display: flex; gap: 12px; align-items: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin: 8px 0;
+  }
+  .steps input { width: 20px; height: 20px; margin-top: 3px; accent-color: var(--ok); flex: none; }
+  .steps label { flex: 1; cursor: pointer; }
+  .steps label::before { content: counter(step) ". "; font-weight: 700; color: var(--accent); }
+  .steps li.done { opacity: .6; }
+  .steps li.done label { text-decoration: line-through; }
+  .progress { font-size: .9rem; color: var(--muted); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .progress button {
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    border-radius: 999px; padding: 4px 12px; cursor: pointer; font: inherit;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  .table-wrap { overflow-x: auto; }
+  details {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    margin: 16px 0;
+  }
+  details summary { cursor: pointer; font-weight: 600; }
+  details[open] summary { margin-bottom: 8px; }
+  footer { color: var(--muted); font-size: .85rem; text-align: center; padding: 24px 16px 40px; }
+  @media (max-width: 480px) {
+    header h1 { font-size: 1.6rem; }
+    .card, details { padding: 14px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>Pokémon GBA online entre hermanos</h1>
+    <p>FireRed, Emerald y Quetzal, cada quien desde su país. Guía actualizada al 23 de octubre de 2026.</p>
+  </div>
+</header>
+
+<nav aria-label="Secciones">
+  <ul>
+    <li><a href="#resumen">Resumen</a></li>
+    <li><a href="#prueba">Prueba con Afterplay</a></li>
+    <li><a href="#requisitos">Requisitos</a></li>
+    <li><a href="#quetzal">Quetzal</a></li>
+    <li><a href="#problemas">Si algo falla</a></li>
+    <li><a href="#plan-b">Plan B</a></li>
+    <li><a href="#fuentes">Fuentes</a></li>
+  </ul>
+</nav>
+
+<main>
+
+<section id="resumen">
+  <h2>Resumen</h2>
+  <div class="verdicts">
+    <div class="card">
+      <span class="tag">Empezar aquí</span>
+      <h3>FireRed y Emerald → Afterplay</h3>
+      <p>Gratis, en web, iPhone, Android y Mac. Su "Online Link Cable" funciona para 2 jugadores y ya tiene en cuenta la distancia.</p>
+    </div>
+    <div class="card">
+      <span class="tag">Con matices</span>
+      <h3>Quetzal → Afterplay para 2</h3>
+      <p>Quetzal no tiene online propio; usa el cable link emulado. Para 3 o 4 jugadores todavía no hay nada sencillo.</p>
+    </div>
+    <div class="card">
+      <span class="tag">Sólo si hace falta</span>
+      <h3>Plan B → algo propio</h3>
+      <p>Si Afterplay falla o quieren jugar 3–4, hay una base de código abierto lista para adaptar.</p>
+    </div>
+  </div>
+
+  <h3>¿Por qué Afterplay?</h3>
+  <p>Mandar los datos del cable link por internet casi nunca funciona: el juego espera respuestas instantáneas y, con la distancia entre países, los intercambios se congelan. En Afterplay, <strong>quien es anfitrión emula las dos GBA</strong> en su dispositivo y el otro sólo manda sus controles. Así la latencia no rompe el intercambio.</p>
+
+  <div class="callout warn">
+    <strong>Lo que todavía no está confirmado</strong>
+    La ayuda de Afterplay menciona Pokémon, pero no encontramos reportes de gente que haya intercambiado por internet con él. Por eso primero hacemos una prueba con Pokémon que no nos importen y con las partidas respaldadas.
+  </div>
+</section>
+
+<section id="prueba">
+  <h2>Prueba con Afterplay (unos 30 minutos)</h2>
+  <p>Marca cada paso al terminarlo; tu progreso se guarda en este navegador.</p>
+  <div class="progress">
+    <span id="progress-text">0 de 0 pasos</span>
+    <button type="button" id="reset">Reiniciar</button>
+  </div>
+
+  <h3>Antes de empezar: respaldos</h3>
+  <ol class="steps" data-group="respaldo">
+    <li><input type="checkbox" id="s1"><label for="s1">Copia tu archivo de partida (<code>.sav</code>) a una carpeta con la fecha de hoy. En mGBA normalmente está junto a la ROM, con el mismo nombre.</label></li>
+    <li><input type="checkbox" id="s2"><label for="s2">Pídele a tu hermano que haga lo mismo con su partida.</label></li>
+  </ol>
+
+  <h3>Paso 1: prueba local, cada quien solo</h3>
+  <p>Sirve para confirmar que el emulador de Afterplay hace bien los intercambios antes de meter la red.</p>
+  <ol class="steps" data-group="local">
+    <li><input type="checkbox" id="s3"><label for="s3">Crea tu cuenta en <a href="https://afterplay.io" target="_blank" rel="noopener">afterplay.io</a> (o en la app de iPhone, Android o Mac: es la misma cuenta).</label></li>
+    <li><input type="checkbox" id="s4"><label for="s4">En <strong>Library → Add Games</strong> agrega tus juegos (FireRed, Emerald o Quetzal).</label></li>
+    <li><input type="checkbox" id="s5"><label for="s5">Abre el juego y, en el menú de partidas, pestaña <strong>In-Game Saves</strong>, importa una <strong>copia</strong> de tu <code>.sav</code>. Verifica que cargue tu partida.</label></li>
+    <li><input type="checkbox" id="s6"><label for="s6">Guarda dentro del juego. En el menú del juego entra a <strong>Link Cable → Link with yourself</strong> y elige otro juego tuyo.</label></li>
+    <li><input type="checkbox" id="s7"><label for="s7">En los dos juegos ve al segundo piso del Centro Pokémon (Cable Club). Haz un combate y después intercambia un Pokémon que no te importe.</label></li>
+  </ol>
+
+  <h3>Paso 2: prueba online, entre hermanos</h3>
+  <ol class="steps" data-group="online">
+    <li><input type="checkbox" id="s8"><label for="s8">Uno crea un <strong>Link</strong> (pestaña Link → <strong>Start Link</strong>) y manda la invitación por WhatsApp. El otro la abre para unirse.</label></li>
+    <li><input type="checkbox" id="s9"><label for="s9">Decidan quién es anfitrión: quien tenga mejor dispositivo y mejor conexión, de preferencia por cable.</label></li>
+    <li><input type="checkbox" id="s10"><label for="s10">Ambos guardan dentro del juego. El anfitrión abre su juego.</label></li>
+    <li><input type="checkbox" id="s11"><label for="s11">El otro lo ve en <strong>Now Playing</strong>, manda la solicitud de <strong>Link Cable</strong> y elige su juego. El anfitrión acepta y la sesión arranca sola.</label></li>
+    <li><input type="checkbox" id="s12"><label for="s12">Primero un combate sin nada en juego. Después, el intercambio de un Pokémon desechable.</label></li>
+    <li><input type="checkbox" id="s13"><label for="s13">Guarden dentro del juego. El anfitrión termina la sesión desde el widget del Link.</label></li>
+    <li><input type="checkbox" id="s14"><label for="s14">Cada quien vuelve a abrir su juego y revisa que el intercambio quedó guardado.</label></li>
+    <li><input type="checkbox" id="s15"><label for="s15">Exporten el <code>.sav</code> nuevo y guárdenlo junto a los respaldos.</label></li>
+    <li><input type="checkbox" id="s16"><label for="s16">Anoten el ping que muestra Afterplay y qué tan jugable se sintió para quien <em>no</em> era anfitrión.</label></li>
+  </ol>
+
+  <div class="callout ok">
+    <strong>Reglas de oro</strong>
+    Guarden siempre dentro del juego antes y después de cada sesión. Durante la sesión no hay save states, y al empezar y terminar los juegos se reinician desde el último guardado.
+  </div>
+
+  <h3>Qué incluye el plan gratis</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Función</th><th>¿Gratis?</th></tr>
+      <tr><td>Link with yourself (local)</td><td>Sí</td></tr>
+      <tr><td>Online Link Cable (GB, GBC, GBA)</td><td>Sí</td></tr>
+      <tr><td>Links: sala con chat, voz y video</td><td>Sí</td></tr>
+      <tr><td>Importar y exportar <code>.sav</code>, sincronizar en la nube</td><td>Sí</td></tr>
+      <tr><td>Save states</td><td>2 manuales y 2 automáticos por juego</td></tr>
+      <tr><td>Multijugador de otras consolas (SNES, N64…)</td><td>No, es de pago</td></tr>
+    </table>
+  </div>
+  <p>Ojo: las ROMs que agregas se suben a los servidores de Afterplay.</p>
+</section>
+
+<section id="requisitos">
+  <h2>Requisitos dentro del juego</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Intercambio</th><th>Qué se necesita</th></tr>
+      <tr><td>Cualquier juego</td><td>Tener la Pokédex y al menos 2 Pokémon en el equipo.</td></tr>
+      <tr><td>FireRed ↔ FireRed<br>Emerald ↔ Emerald</td><td>Nada más.</td></tr>
+      <tr><td>FireRed ↔ Emerald</td><td>En <strong>FireRed</strong>: vencer al Alto Mando (Pokédex Nacional) y completar la misión de Celio en Isla Prima (encontrar el Rubí y el Zafiro para la Network Machine). En <strong>Emerald</strong> basta lo básico.</td></tr>
+      <tr><td>Afterplay</td><td>Sólo enlaza GBA con GBA, máximo 2 jugadores por sesión.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="quetzal">
+  <h2>Quetzal</h2>
+  <p>Hack de Emerald por TenmaRH (antes "Pokémon Emerald Multiplayer"). Versión actual: <strong>0.9.1</strong>, según <a href="https://pokemonquetzal.net" target="_blank" rel="noopener">pokemonquetzal.net</a>, que enlaza a su Discord.</p>
+  <ul>
+    <li><strong>Multijugador:</strong> de 1 a 4 jugadores. Se ven caminar en el mapa, intercambian y combaten, y pueden aliarse contra entrenadores y líderes de gimnasio.</li>
+    <li><strong>Cómo se conecta:</strong> no tiene cliente ni servidor propio; usa el cable link emulado del emulador. Su sitio recomienda mGBA (Mac, Windows y Linux), Pizza Boy GBA, My Boy! Lite o Lemuroid (Android) y Delta (iPhone).</li>
+    <li><strong>Online:</strong> según jugadores en foros, el online "nativo" nunca funcionó bien.</li>
+  </ul>
+  <div class="callout ok">
+    <strong>Para 2 jugadores</strong>
+    Prueben Afterplay con los mismos pasos de arriba. Su mecanismo es el mismo que el de las ventanas multijugador de mGBA, donde Quetzal sí funciona, pero aún no lo probamos con Quetzal.
+  </div>
+  <div class="callout warn">
+    <strong>Para 3 o 4 jugadores</strong>
+    Hoy la opción sin programar es que una Mac corra mGBA con varias ventanas (<strong>File → New multiplayer window</strong>) y los demás se conecten por un escritorio remoto para juegos, como Parsec, cada uno con su control. No está probada; faltaría revisar los clientes para iPhone y los controles por ventana.
+  </div>
+</section>
+
+<section id="problemas">
+  <h2>Si algo falla</h2>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Síntoma</th><th>Qué hacer</th></tr>
+      <tr><td>La partida no aparece al abrir el juego</td><td>Importa el <code>.sav</code> otra vez desde <strong>In-Game Saves</strong> y reinicia el juego.</td></tr>
+      <tr><td>El Cable Club dice que no puede conectar</td><td>Revisen los <a href="#requisitos">requisitos</a>: Pokédex, 2 Pokémon y, en FireRed ↔ Emerald, la Network Machine.</td></tr>
+      <tr><td>Falla el intercambio con "Link with yourself"</td><td>El problema es el emulador, no la red. Pasen al <a href="#plan-b">plan B</a>.</td></tr>
+      <tr><td>Se congela o se desconecta online</td><td>Cambien de anfitrión, usen cable, cierren apps que consuman internet y prueben otra vez. Si sigue, plan B.</td></tr>
+      <tr><td>Se perdió progreso</td><td>Restaura tu <code>.sav</code> de respaldo. Afterplay también guarda respaldos automáticos ("fallback saves").</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="plan-b">
+  <h2>Plan B: algo propio</h2>
+  <p>Sólo si Afterplay falla o quieren jugar 3–4. No hay que empezar de cero.</p>
+
+  <details>
+    <summary>Qué existe ya</summary>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Pieza</th><th>Estado</th><th>Para qué sirve</th></tr>
+        <tr><td><a href="https://github.com/Spuds0588/mgba-splitscreen" target="_blank" rel="noopener">mgba-splitscreen</a></td><td>Activo, en beta (v0.3.1, septiembre de 2026).</td><td>Corre de 2 a 4 GBA enlazadas en un solo proceso. Hay versión web, Mac, Android, Windows y Linux. Netplay por WebRTC está en su roadmap.</td></tr>
+        <tr><td><a href="https://docs.libretro.com/library/mgba_splitscreen/" target="_blank" rel="noopener">Core de RetroArch</a> de lo mismo</td><td>Marcado como determinista, pero todavía no está en las descargas oficiales.</td><td>En teoría funciona con el netplay de RetroArch, que tiene rollback y lobby.</td></tr>
+        <tr><td><a href="https://github.com/thenick775/gbajs3" target="_blank" rel="noopener">gbajs3</a></td><td>Activo.</td><td>Buena interfaz web de GBA con mGBA en WebAssembly, pero su link es sólo local.</td></tr>
+        <tr><td>Netplay de EmulatorJS</td><td>Inestable; GBA sin probar.</td><td>El anfitrión transmite video. Sirve sólo como referencia.</td></tr>
+      </table>
+    </div>
+  </details>
+
+  <details>
+    <summary>Ruta B1: RetroArch con el core de mgba-splitscreen (1–2 tardes)</summary>
+    <ol>
+      <li>Compilar el core para Mac y Android e instalarlo en RetroArch con "Install core from file".</li>
+      <li>Cada jugador carga <strong>GBA Link 2 Player</strong> con las mismas ROMs. El anfitrión manda el estado del juego al conectarse, así que durante la sesión las partidas de todos viven en el anfitrión.</li>
+      <li>Cada quien usa "Focused player" para ver sólo su pantalla.</li>
+    </ol>
+    <p>Ventaja: hasta 4 jugadores, así que sirve para Quetzal. Desventaja: deja fuera al iPhone, porque el RetroArch de la App Store no carga cores propios.</p>
+  </details>
+
+  <details>
+    <summary>Ruta B2: página web propia (20–40 horas para una primera versión)</summary>
+    <p>Partir de la versión web de mgba-splitscreen, que ya enlaza las GBA. Faltaría:</p>
+    <ol>
+      <li>Lobby y conexión entre navegadores con WebRTC.</li>
+      <li>Sincronizar sólo los controles, con un retraso fijo de unos 4–8 cuadros para la distancia entre países. Cada lado emula a todos.</li>
+      <li>Sincronización inicial: cada quien pone su ROM, que nunca viaja; sólo viajan las partidas.</li>
+      <li>Detectar desincronizaciones y resincronizar.</li>
+      <li>Controles táctiles y devolver a cada quien su <code>.sav</code> al terminar.</li>
+    </ol>
+    <p>Funcionaría en cualquier navegador, incluido el iPhone. El riesgo principal es que el enlace se desincronice con Pokémon, y eso se valida antes de escribir el netplay.</p>
+  </details>
+</section>
+
+<section id="fuentes">
+  <h2>Fuentes</h2>
+  <ul>
+    <li>Ayuda oficial de Afterplay: <a href="https://afterplay.featurebase.app/help/articles/1544991-link-cable">Link Cable</a>, <a href="https://afterplay.featurebase.app/help/articles/8324671-link">Link</a>, <a href="https://afterplay.featurebase.app/help/articles/6299436-multiplayer">Multiplayer</a>, <a href="https://afterplay.featurebase.app/help/articles/1242144-saves">Saves</a>, <a href="https://afterplay.featurebase.app/help/articles/6541546-getting-started">Getting Started</a>, <a href="https://afterplay.featurebase.app/help/articles/7974140-troubleshooting">Troubleshooting</a></li>
+    <li><a href="https://retrododo.com/afterplay-emulation-platform-finally-lands-on-ios-android/">Afterplay llega a iOS y Android (Retro Dodo)</a></li>
+    <li>Quetzal: <a href="https://pokemonquetzal.net">pokemonquetzal.net</a>, <a href="https://pokemonquetzal.net/features/">features</a>, <a href="https://steamcommunity.com/app/1118310/discussions/0/6824700612967664883">discusión en Steam sobre el online</a></li>
+    <li><a href="https://www.thonky.com/pokemon/trade-from-firered-to-emerald">Requisitos para intercambiar de FireRed a Emerald (Thonky)</a></li>
+    <li>Plan B: <a href="https://github.com/Spuds0588/mgba-splitscreen">mgba-splitscreen</a>, <a href="https://docs.libretro.com/library/mgba_splitscreen/">docs de libretro</a>, <a href="https://github.com/thenick775/gbajs3">gbajs3</a>, <a href="https://github.com/mgba-emu/mgba/issues/2379">mGBA #2379</a></li>
+  </ul>
+</section>
+
+</main>
+
+<footer>Guía hecha para jugar entre hermanos. No incluye ni enlaza ROMs: usen las suyas.</footer>
+
+<script>
+  const STORAGE_KEY = "pokemon-gba-online-steps";
+  const boxes = Array.from(document.querySelectorAll(".steps input[type=checkbox]"));
+  const progressText = document.getElementById("progress-text");
+
+  function readSaved() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+  }
+
+  function writeSaved(state) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+  }
+
+  function render() {
+    const done = boxes.filter((box) => box.checked).length;
+    progressText.textContent = `${done} de ${boxes.length} pasos`;
+    boxes.forEach((box) => box.closest("li").classList.toggle("done", box.checked));
+  }
+
+  const saved = readSaved();
+  boxes.forEach((box) => {
+    box.checked = Boolean(saved[box.id]);
+    box.addEventListener("change", () => {
+      const state = readSaved();
+      state[box.id] = box.checked;
+      writeSaved(state);
+      render();
+    });
+  });
+
+  document.getElementById("reset").addEventListener("click", () => {
+    boxes.forEach((box) => { box.checked = false; });
+    writeSaved({});
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>
